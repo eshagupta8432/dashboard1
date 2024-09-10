@@ -29,7 +29,7 @@ def main():
     st.title("Pokemon Dashboard")
     with st.spinner("Loading Pokemons..."):
         df = load_data()
-        # st.snow()
+        st.snow()
     rows, columns = df.shape
     col_names = df.columns.tolist()
 
@@ -58,7 +58,26 @@ def main():
         st.plotly_chart(fig3,use_container_width=True)
         fig4=px.line(df,y=selections,log_y=True,
                      color="Generation",height=800)
-        st.plotly_chart(fig4,use_container_width=True)  
+        st.plotly_chart(fig4,use_container_width=True) 
+
+        c1,c2,c3,c4=st.columns(4)
+        mum_cols=df.select_dtypes(include=[np.number]).columns.tolist() 
+        cat_cols=df.select_dtypes(exclude=[np.number]).columns.tolist()[1:]
+        x=c1.selectbox("select x-axis ",mum_cols,index=0) 
+        y=c2.selectbox("select y-axis ",mum_cols,index=1) 
+        z=c3.selectbox("select hue ",mum_cols,index=2)
+        face=c4.selectbox("select face",cat_cols)
+
+        fig5=px.scatter(df,x=x,y=y,color=z,size="Total",
+                        hover_name="Name",
+                        facet_col=face,
+                        height=1000,
+                        facet_col_wrap=3)
+        st.plotly_chart(fig5,use_container_width=True)
+
+        fig6=px.scatter_3d(df,x=x,y=y,z=z,color="Generation",
+                           size="Total",hover_name="Name",height=800)
+        st.plotly_chart(fig6,use_container_width=True)
 
 
 
